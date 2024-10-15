@@ -13,12 +13,15 @@
 - [Peter Lowe’s list](https://pgl.yoyo.org/adservers/serverlist.php) - список рекламных доменов
 - [WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker) - список доменов, используемых windows (в том числе для слежки и сбора аналитики)
 
+В списки так же загружаются дополнительные домены из [@runetfreedom/russia-domains-list](https://github.com/runetfreedom/russia-domains-list). Если хотите предложить какие-то домены или категории, то сделайте это там.
+
 
 ## Доступные категории
 
 - Все категории из [@v2fly/domain-list-community](https://github.com/v2fly/domain-list-community/tree/master/data). Включая: google, discord, youtube, twitter, meta, openai и так далее.
-- `geosite:ru-blocked` - заблокированные в россии домены (`antifilter-download-community` + `re:filter`)
-- `geosite:ru-blocked-all` - **все известные** заблокированные в россии домены (`antifilter-download` + `antifilter-download-community` + `re:filter`). Список содержит не менее 700 тысяч доменов, употреблять с осторожностью.
+- `geosite:ru-blocked` - заблокированные в России домены (`antifilter-download-community` + `re:filter`)
+- `geosite:ru-blocked-all` - **все известные** заблокированные в России домены (`antifilter-download` + `antifilter-download-community` + `re:filter`). Список содержит не менее 700 тысяч доменов, употреблять с осторожностью.
+- `geosite:ru-available-only-inside` - Домены, доступные только внутри России 
 - `geosite:antifilter-download` - все домены из `antifilter.download` (почти 700 тысяч, употреблять с осторожностью)
 - `geosite:antifilter-download-community` - все домены из `community.antifilter.download`
 - `geosite:refilter` - все домены из `re:filter`

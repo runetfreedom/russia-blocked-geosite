@@ -33,6 +33,12 @@ jobs:
           echo "GREATFIRE=https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/refs/heads/release/greatfire.txt" >> $GITHUB_ENV
         shell: bash
 
+      - name: Checkout runetfreedom/russia-domains-list
+        uses: actions/checkout@v4
+        with:
+          repository: runetfreedom/russia-domains-list
+          path: additional
+
       - name: Checkout runetfreedom/domain-list-custom
         uses: actions/checkout@v4
         with:
@@ -65,6 +71,9 @@ jobs:
           
           cp {antifilter-download,antifilter-download-community,refilter,win-spy,win-update,win-extra}.txt ./community/data/
           for f in ./community/data/*.txt; do mv "$f" "${f//.txt/}"; done
+          
+          rm -rf ./additional/README.md
+          mv ./additional/* ./community/data/
 
       - name: Build Russia general blocked list
         run: |
