@@ -93,7 +93,7 @@ jobs:
       - name: Build Ru only list
         run: |
           mkdir -p ./community/data-ru
-          cp ./community/data/{category-ads-all,private,ru-available-only-inside} ./community/data-ru/
+          cp ./community/data/{category-ads-all,private,ru-available-only-inside,category-gov-ru} ./community/data-ru/
           cat ./community/data/antifilter-download-community ./community/data/refilter | sort --ignore-case -u > ./community/data-ru/ru-blocked
           
       - name: Build geosite.dat file
