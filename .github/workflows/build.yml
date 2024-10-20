@@ -104,6 +104,7 @@ jobs:
 
       - name: Move and zip files and generate sha256 hash
         run: |
+          install -Dp ./custom/publish/geosite-ru-only.dat ./publish/geosite-ru-only.dat
           install -Dp ./custom/publish/geosite.dat ./publish/geosite.dat
           install -p {antifilter-download,antifilter-download-community,refilter,win-spy,win-update,win-extra}.txt ./publish/
           install -p ./custom/publish/{ru-blocked,ru-blocked-all,discord,youtube,google,private,category-ads-all}.txt ./publish/
