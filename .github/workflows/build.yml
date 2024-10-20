@@ -94,7 +94,7 @@ jobs:
         run: |
           mkdir -p ./community/data-ru
           cp ./community/data/{category-ads-all,private} ./community/data-ru/
-          cat ./community/data/antifilter-download-community ./community/data/antifilter-download-community | sort --ignore-case -u > ./community/data-ru/ru-blocked
+          cat ./community/data/antifilter-download-community ./community/data/refilter | sort --ignore-case -u > ./community/data-ru/ru-blocked
           
       - name: Build geosite.dat file
         run: |
