@@ -57,6 +57,11 @@ jobs:
           go-version-file: ./custom/go.mod
           cache-dependency-path: ./custom/go.sum
 
+      - name: Install sing-box
+        run: |
+          curl -fsSL https://sing-box.app/install.sh | sh
+          sing-box version
+
       - name: Get and add domain lists
         run: |          
           curl -sSL $ANTIFILTER_DOWNLOAD > ./antifilter-download.txt
@@ -111,6 +116,75 @@ jobs:
           install -p ./custom/publish/{ru-blocked,ru-blocked-all,discord,youtube,google,private,category-ads-all}.txt ./publish/
           
           (cd ./publish && sha256sum geosite.dat > geosite.dat.sha256sum)
+
+      - name: Build SRS files
+        run: |
+          cd ./publish || exit 1
+          
+          generate_srs_from_txt() {
+            local txt_name="$1"
+            local txt_file="${txt_name}.txt"
+            
+            if [ ! -s "$txt_file" ]; then return; fi
+            
+            grep -v '^$' "$txt_file" | 
+            sed 's/^domain: *//;s/^full: *//' | 
+            sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/ /g' > "/tmp/${txt_name}_clean.txt"
+            
+            local line_count=$(wc -l < "/tmp/${txt_name}_clean.txt")
+            
+            local srs_dir="srs/$txt_name"
+            mkdir -p "$srs_dir"
+            
+            {
+              echo '{'
+              echo '  "version": 3,'
+              echo '  "rules": ['
+              echo '    {'
+              echo '      "domain": ['
+              sed 's/^/        "/;s/$/",/' "/tmp/${txt_name}_clean.txt" | sed '$ s/,$//'
+              echo '      ]'
+              echo '    }'
+              echo '  ]'
+              echo '}'
+            } > "/tmp/${txt_name}_full.json"
+            
+            sing-box rule-set compile "/tmp/${txt_name}_full.json" -o "${srs_dir}/${txt_name}_full.srs"
+            
+            if [ "$line_count" -gt 40000 ]; then
+              split -l 40000 "/tmp/${txt_name}_clean.txt" "/tmp/${txt_name}_part_"
+              rm "/tmp/${txt_name}_clean.txt"
+              
+              local part_num=1
+              for part in /tmp/${txt_name}_part_*; do
+                {
+                  echo '{'
+                  echo '  "version": 3,'
+                  echo '  "rules": ['
+                  echo '    {'
+                  echo '      "domain": ['
+                  sed 's/^/        "/;s/$/",/' "$part" | sed '$ s/,$//'
+                  echo '      ]'
+                  echo '    }'
+                  echo '  ]'
+                  echo '}'
+                } > "/tmp/${txt_name}_part${part_num}.json"
+                
+                sing-box rule-set compile "/tmp/${txt_name}_part${part_num}.json" -o "${srs_dir}/${txt_name}_part${part_num}.srs"
+                rm "/tmp/${txt_name}_part${part_num}.json" "$part"
+                ((part_num++))
+              done
+            else
+              mv "${srs_dir}/${txt_name}_full.srs" "${srs_dir}/${txt_name}.srs"
+              rm "/tmp/${txt_name}_clean.txt" "/tmp/${txt_name}_full.json"
+            fi
+            
+            sha256sum "${srs_dir}"/*.srs > "${srs_dir}/${txt_name}.sha256sum"
+          }
+          
+          for txt in *.txt; do
+            [ -s "$txt" ] && generate_srs_from_txt "${txt%.txt}"
+          done
 
       - name: Release and upload assets
         uses: svenstaro/upload-release-action@v2
