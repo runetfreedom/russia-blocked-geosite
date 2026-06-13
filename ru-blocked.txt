@@ -42149,6 +42149,7 @@ domain:notalone.tv
 domain:notate.digital
 domain:tuttifrutti24.biz
 domain:notebooklm.google
+domain:notebooklm.google.com
 domain:noteikts-bitlineplatform.com
 domain:noteserv.ru
 domain:notevericaa.com
