@@ -59,6 +59,9 @@ jobs:
 
       - name: Get and add domain lists
         run: |          
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+          
           curl -sSL $ANTIFILTER_DOWNLOAD | grep -E '^(?:[a-zA-Z0-9а-яА-ЯёЁ](?:[a-zA-Z0-9а-яА-ЯёЁ-]{0,61}[a-zA-Z0-9а-яА-ЯёЁ])?\.)+[a-zA-Zа-яА-ЯёЁ]{2,63}$' > ./antifilter-download.txt
           curl -sSL $ANTIFILTER_DOWNLOAD_COMMUNITY | grep -E '^(?:[a-zA-Z0-9а-яА-ЯёЁ](?:[a-zA-Z0-9а-яА-ЯёЁ-]{0,61}[a-zA-Z0-9а-яА-ЯёЁ])?\.)+[a-zA-Zа-яА-ЯёЁ]{2,63}$' > ./antifilter-download-community.txt
           curl -sSL $REFILTER_ALL | grep -E '^(?:[a-zA-Z0-9а-яА-ЯёЁ](?:[a-zA-Z0-9а-яА-ЯёЁ-]{0,61}[a-zA-Z0-9а-яА-ЯёЁ])?\.)+[a-zA-Zа-яА-ЯёЁ]{2,63}$' > ./refilter.txt
