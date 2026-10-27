@@ -58,16 +58,20 @@ jobs:
           cache-dependency-path: ./custom/go.sum
 
       - name: Get and add domain lists
-        run: |          
-          curl -sSL $ANTIFILTER_DOWNLOAD > ./antifilter-download.txt
-          curl -sSL $ANTIFILTER_DOWNLOAD_COMMUNITY > ./antifilter-download-community.txt
-          curl -sSL $REFILTER_ALL > ./refilter.txt
+        run: |
+          sanitize() {
+            awk -v n="$1" '{ sub(/\r$/, "") } NF <= 1 { print; next } { printf "::warning title=Dropped invalid line::%s: %s\n", n, $0 > "/dev/stderr" }'
+          }
+
+          curl -sSL $ANTIFILTER_DOWNLOAD | sanitize antifilter-download > ./antifilter-download.txt
+          curl -sSL $ANTIFILTER_DOWNLOAD_COMMUNITY | sanitize antifilter-download-community > ./antifilter-download-community.txt
+          curl -sSL $REFILTER_ALL | sanitize refilter > ./refilter.txt
           curl -sSL $WIN_SPY | grep "0.0.0.0" | awk '{print $2}' > ./win-spy.txt
           curl -sSL $WIN_UPDATE | grep "0.0.0.0" | awk '{print $2}' > ./win-update.txt
           curl -sSL $WIN_EXTRA | grep "0.0.0.0" | awk '{print $2}' > ./win-extra.txt
           
-          curl -sSL $GFW > ./community/data/gfw.txt
-          curl -sSL $GREATFIRE > ./community/data/greatfire.txt
+          curl -sSL $GFW | sanitize gfw > ./community/data/gfw.txt
+          curl -sSL $GREATFIRE | sanitize greatfire > ./community/data/greatfire.txt
           
           cp {antifilter-download,antifilter-download-community,refilter,win-spy,win-update,win-extra}.txt ./community/data/
           for f in ./community/data/*.txt; do mv "$f" "${f//.txt/}"; done
